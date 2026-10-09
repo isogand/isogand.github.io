@@ -1,28 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sogand Tatlari – AI Researcher</title>
-<meta name="description" content="Sogand Tatlari: optimizer design and LLM reliability research. Applying for thesis-based MSc, Fall 2027.">
+<title>Sogand Tatlari</title>
+<meta name="description" content="Sogand Tatlari: AI researcher working on optimizer design and LLM reliability. Applying for thesis-based MSc, Fall 2027.">
+<script>
+  // Set the theme before first paint: saved choice, otherwise the system setting.
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem("theme"); } catch (e) {}
+    if (!t) t = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
 <style>
   :root {
-    --bg: #f7f8fa;
-    --ink: #1b2430;
-    --muted: #5b6675;
-    --line: #d9dee6;
-    --accent: #2f5da8;
-    --accent-2: #b4472f;
+    --bg: #ffffff;
+    --ink: #2a2f36;
+    --muted: #6b7380;
+    --line: #e3e6ea;
+    --link: #1f5fa8;
+    --bar: #ffffff;
+    --soft: #f4f6f8;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #12171f;
-      --ink: #e7ebf1;
-      --muted: #9aa5b4;
-      --line: #2a3340;
-      --accent: #7fa6e6;
-      --accent-2: #e0866f;
-    }
+  [data-theme="dark"] {
+    --bg: #14181e;
+    --ink: #dfe4ea;
+    --muted: #98a2b0;
+    --line: #2a313b;
+    --link: #7fb0ee;
+    --bar: #14181e;
+    --soft: #1b2028;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -30,114 +39,217 @@
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font: 17px/1.65 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font: 16px/1.65 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    transition: background 0.2s, color 0.2s;
   }
-  main { max-width: 720px; margin: 0 auto; padding: 56px 22px 72px; }
-  h1, h2, h3 {
-    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-    line-height: 1.2;
-    margin: 0;
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 3px; }
+
+  /* Top bar */
+  .masthead { border-bottom: 1px solid var(--line); background: var(--bar); position: sticky; top: 0; z-index: 10; }
+  .masthead-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; gap: 4px; min-height: 52px; flex-wrap: wrap; }
+  .site-title { font-weight: 700; color: var(--ink); margin-right: 18px; padding: 10px 0; }
+  .site-title:hover { text-decoration: none; }
+  .nav a { color: var(--muted); padding: 14px 12px; display: inline-block; font-size: 0.95rem; }
+  .nav a:hover { color: var(--ink); text-decoration: none; }
+  .nav a.active { color: var(--ink); box-shadow: inset 0 -2px 0 var(--link); }
+  .spacer { flex: 1; }
+  .theme-btn {
+    background: none; border: 1px solid var(--line); color: var(--muted);
+    border-radius: 6px; padding: 5px 10px; font: inherit; font-size: 0.85rem; cursor: pointer;
   }
-  h1 { font-size: 2.5rem; letter-spacing: -0.01em; }
-  h2 {
-    font-size: 1.45rem;
-    margin: 52px 0 14px;
-    padding-top: 22px;
-    border-top: 1px solid var(--line);
+  .theme-btn:hover { color: var(--ink); border-color: var(--muted); }
+
+  /* Layout */
+  .page { max-width: 1100px; margin: 0 auto; padding: 36px 20px 64px; display: grid; grid-template-columns: 230px 1fr; gap: 48px; }
+  @media (max-width: 800px) { .page { grid-template-columns: 1fr; gap: 24px; } }
+
+  /* Sidebar */
+  .sidebar { align-self: start; position: sticky; top: 76px; }
+  @media (max-width: 800px) { .sidebar { position: static; text-align: center; } }
+  .avatar {
+    width: 160px; height: 160px; border-radius: 50%; object-fit: cover; display: block;
+    border: 1px solid var(--line); background: var(--soft);
   }
-  h3 { font-size: 1.1rem; margin: 22px 0 4px; }
-  p { margin: 0 0 12px; }
-  a { color: var(--accent); text-underline-offset: 3px; }
-  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
-  .lead { font-size: 1.12rem; color: var(--ink); max-width: 60ch; }
-  .role { color: var(--muted); margin: 6px 0 22px; }
-  .links { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 18px 0 0; padding: 0; list-style: none; }
-  .hero { display: grid; grid-template-columns: 1fr; gap: 24px; }
-  .curve { width: 100%; max-width: 420px; height: auto; margin-top: 8px; }
-  .curve .c1 { stroke: var(--accent-2); }
-  .curve .c2 { stroke: var(--accent); }
-  .curve text { fill: var(--muted); font: 12px -apple-system, "Segoe UI", sans-serif; }
-  .curve .axis { stroke: var(--line); }
-  .meta { color: var(--muted); font-size: 0.95rem; margin: 0 0 8px; }
-  .limits { color: var(--muted); font-size: 0.97rem; }
-  ul.plain { padding-left: 1.2em; margin: 0 0 12px; }
-  ul.plain li { margin-bottom: 4px; }
-  .row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  .row span:last-child { color: var(--muted); }
-  footer { margin-top: 56px; color: var(--muted); font-size: 0.9rem; }
-  @media (min-width: 760px) { .hero { grid-template-columns: 1.15fr 1fr; align-items: center; } }
+  @media (max-width: 800px) { .avatar { margin: 0 auto; } }
+  .avatar-fallback {
+    width: 160px; height: 160px; border-radius: 50%; border: 1px solid var(--line);
+    background: var(--soft); color: var(--muted); display: none; align-items: center; justify-content: center;
+    font-size: 3rem; font-weight: 600;
+  }
+  @media (max-width: 800px) { .avatar-fallback { margin: 0 auto; } }
+  .author-name { font-size: 1.35rem; font-weight: 700; margin: 14px 0 0; line-height: 1.25; }
+  .author-bio { color: var(--muted); margin: 4px 0 12px; font-size: 0.95rem; }
+  .side-links { list-style: none; padding: 0; margin: 0; font-size: 0.93rem; }
+  .side-links li { margin: 4px 0; color: var(--muted); }
+
+  /* Content */
+  .content h1 { font-size: 1.9rem; margin: 0 0 14px; line-height: 1.25; }
+  .content h2 { font-size: 1.3rem; margin: 34px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  .content h3 { font-size: 1.05rem; margin: 22px 0 2px; }
+  .content p { margin: 0 0 12px; }
+  .meta { color: var(--muted); font-size: 0.92rem; margin: 0 0 8px; }
+  .limits { color: var(--muted); font-size: 0.95rem; }
+  .content ul { padding-left: 1.25em; margin: 0 0 12px; }
+  .content li { margin-bottom: 4px; }
+  .row { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+  .row .when { color: var(--muted); font-size: 0.93rem; }
+  .btn {
+    display: inline-block; border: 1px solid var(--line); border-radius: 6px; padding: 6px 14px;
+    background: var(--soft); color: var(--ink); font-size: 0.93rem;
+  }
+  .btn:hover { border-color: var(--muted); text-decoration: none; }
+  .section { display: none; }
+  .section.active { display: block; }
+  footer { max-width: 1100px; margin: 0 auto; padding: 18px 20px 36px; color: var(--muted); font-size: 0.88rem; border-top: 1px solid var(--line); }
 </style>
 </head>
 <body>
-<main>
 
-  <section class="hero">
-    <div>
-      <h1>Sogand Tatlari</h1>
-      <p class="role">AI researcher and software engineer, Tehran, Iran</p>
-      <p class="lead">I study why training and prompting fail in systematic ways, and how to design around those failures. My work so far covers an optimizer for neural networks on tabular data and a controlled study of how prompt strategy interacts with the choice of LLM.</p>
-      <p class="lead">I am applying to thesis-based MSc programs for Fall 2027.</p>
-      <ul class="links">
-        <li><a href="mailto:sogandtatlari1999@gmail.com">sogandtatlari1999@gmail.com</a></li>
-        <li><a href="https://github.com/isogand">GitHub</a></li>
-        <li><a href="https://www.linkedin.com/in/sogandtatlari/">LinkedIn</a></li>
-        <li><a href="Tatlari_CV.pdf">CV (PDF)</a></li>
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="site-title" href="#about">Sogand Tatlari</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#about" data-sec="about">About</a>
+      <a href="#publications" data-sec="publications">Publications</a>
+      <a href="#cv" data-sec="cv">CV</a>
+    </nav>
+    <span class="spacer"></span>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Switch between light and dark mode">Dark mode</button>
+  </div>
+</header>
+
+<div class="page">
+
+  <aside class="sidebar">
+    <!-- Put your photo at images/profile.jpg. If it is missing, initials are shown. -->
+    <img class="avatar" id="avatarImg" src="images/profile.jpg" alt="Sogand Tatlari">
+    <div class="avatar-fallback" id="avatarFallback" aria-hidden="true">ST</div>
+    <h3 class="author-name">Sogand Tatlari</h3>
+    <p class="author-bio">AI researcher and software engineer</p>
+    <ul class="side-links">
+      <li>Tehran, Iran</li>
+      <li><a href="mailto:sogandtatlari1999@gmail.com">Email</a></li>
+      <li><a href="https://github.com/isogand">GitHub</a></li>
+      <li><a href="https://www.linkedin.com/in/sogandtatlari/">LinkedIn</a></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+
+    <!-- ABOUT -->
+    <section class="section" id="sec-about">
+      <h1>About me</h1>
+      <p>Hi! I'm Sogand Tatlari, an independent AI researcher and software engineer based in Tehran. I hold a B.Sc. in Computer Engineering from Hakim Sabzevari University.</p>
+      <p>My research interest is in why training and prompting fail in systematic ways, and how to design around those failures. So far this has covered two areas: optimizer design for neural networks on tabular data, and a controlled study of how prompt strategy interacts with the choice of LLM. I like experiments with careful statistical design, and I try to report limitations plainly.</p>
+      <p>Before research, I worked as a mobile developer and front-end team lead. Deploying machine learning models in production, such as a computer vision pipeline for ID verification, raised reliability questions that moved me toward research.</p>
+      <p><strong>I am applying to thesis-based MSc programs for Fall 2027.</strong> I am currently studying reinforcement learning from Sutton and Barto and plan to test my optimizer in a small RL setting.</p>
+
+      <h2>Selected work</h2>
+      <p><a href="#publications">LPECO</a>, a control-inspired optimizer for tabular neural networks, and <a href="#publications">Emergent Brittleness</a>, a factorial study of prompt strategy and model choice in LLM code optimization. Both are preprints with public code.</p>
+    </section>
+
+    <!-- PUBLICATIONS -->
+    <section class="section" id="sec-publications">
+      <h1>Publications</h1>
+      <p class="meta">Both are preprints and have not been peer reviewed. * denotes equal contribution.</p>
+
+      <h3>Unlocking Potential: A Case for Neural Network Perseverance on Critical Tabular Tasks Through Principled Optimizer Design</h3>
+      <p class="meta">S. Mobarhan*, <strong>S. Tatlari*</strong>. Preprint, 2025.</p>
+      <p>We introduce LPECO, which adds a PI-control-inspired integral correction to the Lion optimizer to damp excess momentum before the sign step. A ResNet-like network trained with LPECO was compared with Adam, AdamW, Lion, LightGBM, and XGBoost on eight tabular datasets under an equal 128-trial hyperparameter search. It was statistically equivalent to LightGBM (TOST) and had a 98.4% posterior probability of practical equivalence to XGBoost (Bayesian ROPE). On BreastCancer, its results were higher than both tree models (Mann-Whitney U, p &lt; 0.001).</p>
+      <p class="limits">Limitations: eight datasets, one architecture, one random seed, accuracy only. The omnibus Friedman test was not significant (p = 0.422), the equivalence margin is derived from our own benchmark, and the correction term is a heuristic without a convergence analysis. The link between LPECO's advantage and class balance was a non-significant trend (&rho; &asymp; 0.54, p = 0.170).</p>
+      <p><a href="https://doi.org/10.5281/zenodo.17116288">Preprint</a> &nbsp;|&nbsp; <a href="https://github.com/Stevemoretz/LPECO">Code</a></p>
+
+      <h3>Emergent Brittleness: A Case Study on Pathological Instruction-Following in LLM-Based Code Optimization</h3>
+      <p class="meta"><strong>S. Tatlari*</strong>, S. Mobarhan*, H. R. Hamidi. Preprint, 2025.</p>
+      <p>A 3&times;3&times;5 factorial experiment (270 runs) with three LLMs, three prompt strategies, and five synthetic Python optimization tasks, analyzed with a mixed-effects logistic model for correctness and generalized least squares for performance. An elaborate "expert" prompt significantly reduced correctness for gemini-2.5-flash-lite (p = 0.030) and showed a non-significant trend for qwen-2.5-72b-instruct (p = 0.098). A persona prompt showed a trend toward slower solutions for qwen-2.5-72b-instruct (p = 0.059). The effect of a prompt depended on the model.</p>
+      <p class="limits">Limitations: the expert prompt bundles several components, so I cannot say which one matters; tasks were synthetic; several effects are trends. Next steps are component ablations, more runs, and public benchmarks.</p>
+      <p><a href="https://doi.org/10.5281/zenodo.17116501">Preprint</a> &nbsp;|&nbsp; <a href="https://github.com/isogand/emergent-brittleness-llm-study">Code and data</a></p>
+    </section>
+
+    <!-- CV -->
+    <section class="section" id="sec-cv">
+      <h1>CV</h1>
+      <p><a class="btn" href="Tatlari_CV.pdf">Download CV (PDF)</a></p>
+
+      <h2>Education</h2>
+      <div class="row"><strong>Hakim Sabzevari University, B.Sc. Computer Engineering</strong><span class="when">2017 to 2022</span></div>
+      <ul>
+        <li>Full scholarship.</li>
+        <li>Capstone (20/20): domain-specific semantic search engine.</li>
       </ul>
-    </div>
 
-    <svg class="curve" viewBox="0 0 420 220" role="img" aria-label="Two training curves: one overshoots the minimum, one with a damping correction settles smoothly">
-      <line class="axis" x1="30" y1="190" x2="400" y2="190" stroke-width="1"/>
-      <line class="axis" x1="30" y1="20" x2="30" y2="190" stroke-width="1"/>
-      <path class="c1" fill="none" stroke-width="2.2" stroke-linecap="round"
-        d="M30 40 C 70 130, 100 190, 135 190 C 165 190, 185 118, 215 118 C 245 118, 262 176, 292 176 C 320 176, 335 150, 365 150 C 380 150, 392 158, 400 160"/>
-      <path class="c2" fill="none" stroke-width="2.2" stroke-linecap="round"
-        d="M30 40 C 70 125, 110 178, 160 184 C 230 190, 330 190, 400 190"/>
-      <text x="40" y="212">training steps</text>
-      <text x="238" y="104">momentum overshoots</text>
-      <text x="238" y="176">damped correction</text>
-    </svg>
-  </section>
+      <h2>Research experience</h2>
+      <div class="row"><strong>Independent AI researcher</strong><span class="when">2024 to present</span></div>
+      <ul>
+        <li>Two co-authored preprints (2025): LPECO (optimizer design) and Emergent Brittleness (LLM reliability), supervised by Prof. H. R. Hamidi (IKIU) for the second.</li>
+      </ul>
 
-  <h2>Research</h2>
+      <h2>Professional experience</h2>
+      <div class="row"><strong>Daric Data Processing, Mobile Developer and Front-End Team Lead</strong><span class="when">Apr 2023 to present</span></div>
+      <ul>
+        <li>Led a front-end team and built the company's React Native booking app.</li>
+        <li>Designed and deployed two production ML models: gender verification from ID photos (computer vision) and offensive-comment detection (NLP).</li>
+      </ul>
+      <div class="row"><strong>dreamworldestate, Mobile Developer (remote, part-time)</strong><span class="when">Dec 2021 to Mar 2023</span></div>
+      <ul><li>Built and maintained a React Native app for real estate listings.</li></ul>
 
-  <h3>LPECO: a control-inspired optimizer for tabular neural networks</h3>
-  <p class="meta">With Siavash Mobarhan. Preprint, 2025.</p>
-  <p>LPECO adds an integral, PI-control-inspired correction term to the Lion optimizer. The term is meant to damp excess momentum before the sign step. We compared a ResNet-like network trained with LPECO against Adam, AdamW, Lion, LightGBM, and XGBoost on eight tabular datasets, using the same 128-trial hyperparameter search for every pairing.</p>
-  <p>On this benchmark, LPECO was statistically equivalent to LightGBM (TOST) and had a 98.4% posterior probability of practical equivalence to XGBoost (Bayesian ROPE), and it obtained the highest mean rank. On the BreastCancer dataset, its distribution of results was higher than both tree models (Mann-Whitney U, p &lt; 0.001).</p>
-  <p class="limits">Limitations: eight datasets, one architecture, one random seed, accuracy only, and the omnibus Friedman test was not significant (p = 0.422). The equivalence margin comes from our own benchmark, and the correction term is a heuristic without a convergence analysis. A link between LPECO's advantage and class balance was only a non-significant trend (Spearman &rho; &asymp; 0.54, p = 0.170).</p>
-  <p><a href="https://doi.org/10.5281/zenodo.17116288">Preprint (Zenodo)</a> &nbsp;|&nbsp; <a href="https://github.com/Stevemoretz/LPECO">Code</a></p>
+      <h2>Skills</h2>
+      <ul>
+        <li>Machine learning: Python, PyTorch, TensorFlow/Keras, scikit-learn, Optuna (TPE)</li>
+        <li>Statistics: mixed-effects models, GLS, TOST and Bayesian equivalence testing, Friedman and Mann-Whitney tests</li>
+        <li>Engineering: React Native, React, JavaScript, REST APIs</li>
+      </ul>
 
-  <h3>Emergent Brittleness: prompt strategy and model choice in LLM code optimization</h3>
-  <p class="meta">With Siavash Mobarhan, supervised by H. R. Hamidi (IKIU). Preprint, 2025.</p>
-  <p>We ran a 3&times;3&times;5 factorial experiment (270 runs) with three LLMs, three prompt strategies, and five synthetic Python optimization tasks. Correctness was checked with unit tests and analyzed with a mixed-effects logistic model; performance was analyzed with generalized least squares.</p>
-  <p>An elaborate &ldquo;expert&rdquo; prompt significantly reduced correctness for gemini-2.5-flash-lite (p = 0.030) and showed a non-significant trend for qwen-2.5-72b-instruct (p = 0.098). A persona prompt showed a trend toward slower solutions for qwen-2.5-72b-instruct (p = 0.059). In short, the effect of a prompt depended on the model.</p>
-  <p class="limits">Limitations: the expert prompt bundles role, output format, a reflective workflow, and quality constraints, so I cannot say which component matters. Tasks were synthetic, and several effects are trends, not confirmed results. Next steps are component ablations, more runs, and public benchmarks.</p>
-  <p><a href="https://doi.org/10.5281/zenodo.17116501">Preprint (Zenodo)</a> &nbsp;|&nbsp; <a href="https://github.com/isogand/emergent-brittleness-llm-study">Code and data</a></p>
+      <h2>Certifications</h2>
+      <ul>
+        <li>Natural Language Processing; Custom and Distributed Training with TensorFlow (DeepLearning.AI, Coursera)</li>
+      </ul>
+    </section>
 
-  <h2>Looking ahead</h2>
-  <p>I want to understand when stability corrections in training help, and to extend the evaluation methods I used (factorial designs, mixed-effects models, equivalence testing) to learning systems more broadly. I am currently studying reinforcement learning from Sutton and Barto and plan to test LPECO in a small RL setting.</p>
+  </main>
+</div>
 
-  <h2>Experience</h2>
-  <div class="row"><span><strong>Daric Data Processing</strong>, Mobile Developer and Front-End Team Lead</span><span>Apr 2023 to present</span></div>
-  <p>Led a front-end team and built the company's React Native booking app. Designed and deployed two production ML models: gender verification from ID photos (computer vision) and offensive-comment detection (NLP).</p>
-  <div class="row"><span><strong>dreamworldestate</strong>, Mobile Developer (remote, part-time)</span><span>Dec 2021 to Mar 2023</span></div>
-  <p>Built and maintained a React Native app for real estate listings.</p>
+<footer>&copy; Sogand Tatlari</footer>
 
-  <h2>Education</h2>
-  <div class="row"><span><strong>Hakim Sabzevari University</strong>, B.Sc. Computer Engineering</span><span>2017 to 2022</span></div>
-  <p>Full scholarship. Capstone: a domain-specific semantic search engine (graded 20/20).</p>
+<script>
+  // Simple page switching with the URL hash: #about, #publications, #cv
+  var sections = ["about", "publications", "cv"];
+  function show() {
+    var id = (location.hash || "#about").slice(1);
+    if (sections.indexOf(id) === -1) id = "about";
+    sections.forEach(function (s) {
+      document.getElementById("sec-" + s).classList.toggle("active", s === id);
+    });
+    document.querySelectorAll(".nav a").forEach(function (a) {
+      a.classList.toggle("active", a.getAttribute("data-sec") === id);
+    });
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", show);
+  show();
 
-  <h2>Skills</h2>
-  <ul class="plain">
-    <li>Machine learning: Python, PyTorch, TensorFlow/Keras, scikit-learn, Optuna (TPE)</li>
-    <li>Statistics: mixed-effects models, GLS, TOST and Bayesian equivalence testing, Friedman and Mann-Whitney tests</li>
-    <li>Engineering: React Native, React, JavaScript, REST APIs</li>
-  </ul>
+  // Theme toggle
+  var btn = document.getElementById("themeBtn");
+  function label() {
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    btn.textContent = dark ? "Light mode" : "Dark mode";
+  }
+  btn.addEventListener("click", function () {
+    var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("theme", next); } catch (e) {}
+    label();
+  });
+  label();
 
-  <footer>
-    <p>Contact: <a href="mailto:sogandtatlari1999@gmail.com">sogandtatlari1999@gmail.com</a></p>
-  </footer>
-
-</main>
+  // Show initials if the profile photo is missing
+  var img = document.getElementById("avatarImg");
+  img.addEventListener("error", function () {
+    img.style.display = "none";
+    document.getElementById("avatarFallback").style.display = "flex";
+  });
+</script>
 </body>
 </html>
