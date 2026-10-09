@@ -1,1 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sogand Tatlari – AI Researcher</title>
+<meta name="description" content="Sogand Tatlari: optimizer design and LLM reliability research. Applying for thesis-based MSc, Fall 2027.">
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --ink: #1b2430;
+    --muted: #5b6675;
+    --line: #d9dee6;
+    --accent: #2f5da8;
+    --accent-2: #b4472f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12171f;
+      --ink: #e7ebf1;
+      --muted: #9aa5b4;
+      --line: #2a3340;
+      --accent: #7fa6e6;
+      --accent-2: #e0866f;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.65 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 56px 22px 72px; }
+  h1, h2, h3 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    line-height: 1.2;
+    margin: 0;
+  }
+  h1 { font-size: 2.5rem; letter-spacing: -0.01em; }
+  h2 {
+    font-size: 1.45rem;
+    margin: 52px 0 14px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+  h3 { font-size: 1.1rem; margin: 22px 0 4px; }
+  p { margin: 0 0 12px; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  .lead { font-size: 1.12rem; color: var(--ink); max-width: 60ch; }
+  .role { color: var(--muted); margin: 6px 0 22px; }
+  .links { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 18px 0 0; padding: 0; list-style: none; }
+  .hero { display: grid; grid-template-columns: 1fr; gap: 24px; }
+  .curve { width: 100%; max-width: 420px; height: auto; margin-top: 8px; }
+  .curve .c1 { stroke: var(--accent-2); }
+  .curve .c2 { stroke: var(--accent); }
+  .curve text { fill: var(--muted); font: 12px -apple-system, "Segoe UI", sans-serif; }
+  .curve .axis { stroke: var(--line); }
+  .meta { color: var(--muted); font-size: 0.95rem; margin: 0 0 8px; }
+  .limits { color: var(--muted); font-size: 0.97rem; }
+  ul.plain { padding-left: 1.2em; margin: 0 0 12px; }
+  ul.plain li { margin-bottom: 4px; }
+  .row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .row span:last-child { color: var(--muted); }
+  footer { margin-top: 56px; color: var(--muted); font-size: 0.9rem; }
+  @media (min-width: 760px) { .hero { grid-template-columns: 1.15fr 1fr; align-items: center; } }
+</style>
+</head>
+<body>
+<main>
 
+  <section class="hero">
+    <div>
+      <h1>Sogand Tatlari</h1>
+      <p class="role">AI researcher and software engineer, Tehran, Iran</p>
+      <p class="lead">I study why training and prompting fail in systematic ways, and how to design around those failures. My work so far covers an optimizer for neural networks on tabular data and a controlled study of how prompt strategy interacts with the choice of LLM.</p>
+      <p class="lead">I am applying to thesis-based MSc programs for Fall 2027.</p>
+      <ul class="links">
+        <li><a href="mailto:sogandtatlari1999@gmail.com">sogandtatlari1999@gmail.com</a></li>
+        <li><a href="https://github.com/isogand">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/sogandtatlari/">LinkedIn</a></li>
+        <li><a href="Tatlari_CV.pdf">CV (PDF)</a></li>
+      </ul>
+    </div>
+
+    <svg class="curve" viewBox="0 0 420 220" role="img" aria-label="Two training curves: one overshoots the minimum, one with a damping correction settles smoothly">
+      <line class="axis" x1="30" y1="190" x2="400" y2="190" stroke-width="1"/>
+      <line class="axis" x1="30" y1="20" x2="30" y2="190" stroke-width="1"/>
+      <path class="c1" fill="none" stroke-width="2.2" stroke-linecap="round"
+        d="M30 40 C 70 130, 100 190, 135 190 C 165 190, 185 118, 215 118 C 245 118, 262 176, 292 176 C 320 176, 335 150, 365 150 C 380 150, 392 158, 400 160"/>
+      <path class="c2" fill="none" stroke-width="2.2" stroke-linecap="round"
+        d="M30 40 C 70 125, 110 178, 160 184 C 230 190, 330 190, 400 190"/>
+      <text x="40" y="212">training steps</text>
+      <text x="238" y="104">momentum overshoots</text>
+      <text x="238" y="176">damped correction</text>
+    </svg>
+  </section>
+
+  <h2>Research</h2>
+
+  <h3>LPECO: a control-inspired optimizer for tabular neural networks</h3>
+  <p class="meta">With Siavash Mobarhan. Preprint, 2025.</p>
+  <p>LPECO adds an integral, PI-control-inspired correction term to the Lion optimizer. The term is meant to damp excess momentum before the sign step. We compared a ResNet-like network trained with LPECO against Adam, AdamW, Lion, LightGBM, and XGBoost on eight tabular datasets, using the same 128-trial hyperparameter search for every pairing.</p>
+  <p>On this benchmark, LPECO was statistically equivalent to LightGBM (TOST) and had a 98.4% posterior probability of practical equivalence to XGBoost (Bayesian ROPE), and it obtained the highest mean rank. On the BreastCancer dataset, its distribution of results was higher than both tree models (Mann-Whitney U, p &lt; 0.001).</p>
+  <p class="limits">Limitations: eight datasets, one architecture, one random seed, accuracy only, and the omnibus Friedman test was not significant (p = 0.422). The equivalence margin comes from our own benchmark, and the correction term is a heuristic without a convergence analysis. A link between LPECO's advantage and class balance was only a non-significant trend (Spearman &rho; &asymp; 0.54, p = 0.170).</p>
+  <p><a href="https://doi.org/10.5281/zenodo.17116288">Preprint (Zenodo)</a> &nbsp;|&nbsp; <a href="https://github.com/Stevemoretz/LPECO">Code</a></p>
+
+  <h3>Emergent Brittleness: prompt strategy and model choice in LLM code optimization</h3>
+  <p class="meta">With Siavash Mobarhan, supervised by H. R. Hamidi (IKIU). Preprint, 2025.</p>
+  <p>We ran a 3&times;3&times;5 factorial experiment (270 runs) with three LLMs, three prompt strategies, and five synthetic Python optimization tasks. Correctness was checked with unit tests and analyzed with a mixed-effects logistic model; performance was analyzed with generalized least squares.</p>
+  <p>An elaborate &ldquo;expert&rdquo; prompt significantly reduced correctness for gemini-2.5-flash-lite (p = 0.030) and showed a non-significant trend for qwen-2.5-72b-instruct (p = 0.098). A persona prompt showed a trend toward slower solutions for qwen-2.5-72b-instruct (p = 0.059). In short, the effect of a prompt depended on the model.</p>
+  <p class="limits">Limitations: the expert prompt bundles role, output format, a reflective workflow, and quality constraints, so I cannot say which component matters. Tasks were synthetic, and several effects are trends, not confirmed results. Next steps are component ablations, more runs, and public benchmarks.</p>
+  <p><a href="https://doi.org/10.5281/zenodo.17116501">Preprint (Zenodo)</a> &nbsp;|&nbsp; <a href="https://github.com/isogand/emergent-brittleness-llm-study">Code and data</a></p>
+
+  <h2>Looking ahead</h2>
+  <p>I want to understand when stability corrections in training help, and to extend the evaluation methods I used (factorial designs, mixed-effects models, equivalence testing) to learning systems more broadly. I am currently studying reinforcement learning from Sutton and Barto and plan to test LPECO in a small RL setting.</p>
+
+  <h2>Experience</h2>
+  <div class="row"><span><strong>Daric Data Processing</strong>, Mobile Developer and Front-End Team Lead</span><span>Apr 2023 to present</span></div>
+  <p>Led a front-end team and built the company's React Native booking app. Designed and deployed two production ML models: gender verification from ID photos (computer vision) and offensive-comment detection (NLP).</p>
+  <div class="row"><span><strong>dreamworldestate</strong>, Mobile Developer (remote, part-time)</span><span>Dec 2021 to Mar 2023</span></div>
+  <p>Built and maintained a React Native app for real estate listings.</p>
+
+  <h2>Education</h2>
+  <div class="row"><span><strong>Hakim Sabzevari University</strong>, B.Sc. Computer Engineering</span><span>2017 to 2022</span></div>
+  <p>Full scholarship. Capstone: a domain-specific semantic search engine (graded 20/20).</p>
+
+  <h2>Skills</h2>
+  <ul class="plain">
+    <li>Machine learning: Python, PyTorch, TensorFlow/Keras, scikit-learn, Optuna (TPE)</li>
+    <li>Statistics: mixed-effects models, GLS, TOST and Bayesian equivalence testing, Friedman and Mann-Whitney tests</li>
+    <li>Engineering: React Native, React, JavaScript, REST APIs</li>
+  </ul>
+
+  <footer>
+    <p>Contact: <a href="mailto:sogandtatlari1999@gmail.com">sogandtatlari1999@gmail.com</a></p>
+  </footer>
+
+</main>
+</body>
+</html>
