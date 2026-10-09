@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>
-  // Set the theme before first paint: saved choice, otherwise the system setting.
   (function () {
     var t = null;
     try { t = localStorage.getItem("theme"); } catch (e) {}
@@ -19,14 +18,13 @@
 </script>
 <style>
   :root {
-    /* Light theme — text focused */
     --bg: #ffffff;
     --bg-elev: #f6f8fa;
-    --ink: #1c2024;          /* main text: near-black, softer than pure black */
-    --ink-soft: #3a4149;     /* secondary headings */
-    --muted: #5c6470;        /* muted text: darker than before for readability */
+    --ink: #1c2024;
+    --ink-soft: #3a4149;
+    --muted: #5c6470;
     --line: #e4e8ed;
-    --link: #1f5fae;         /* deeper blue, better contrast on white */
+    --link: #1f5fae;
     --link-hover: #143f77;
     --bar: rgba(255, 255, 255, 0.85);
     --soft: #f4f6f9;
@@ -35,14 +33,13 @@
     --radius: 10px;
   }
   [data-theme="dark"] {
-    /* Dark theme — softer, warmer, eye-friendly */
-    --bg: #0f1419;           /* deep but not pure black */
+    --bg: #0f1419;
     --bg-elev: #161c23;
-    --ink: #e9eef4;          /* main text: high contrast, slightly cool */
-    --ink-soft: #c8d1dc;     /* secondary headings */
-    --muted: #98a3b3;        /* muted: readable on dark, WCAG AA */
+    --ink: #e9eef4;
+    --ink-soft: #c8d1dc;
+    --muted: #98a3b3;
     --line: #232b35;
-    --link: #7cb2f0;         /* soft sky blue, easy on dark */
+    --link: #7cb2f0;
     --link-hover: #a6cbf7;
     --bar: rgba(15, 20, 25, 0.85);
     --soft: #161c23;
@@ -50,7 +47,8 @@
     --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.5);
   }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scrollbar-gutter: stable; }
+
   body {
     margin: 0;
     background: var(--bg);
@@ -65,6 +63,7 @@
     text-rendering: optimizeLegibility;
     letter-spacing: 0.003em;
     transition: background 0.2s, color 0.2s;
+    overflow-y: scroll;
   }
   code, pre, kbd, samp {
     font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -79,7 +78,7 @@
   }
   strong { font-weight: 600; color: var(--ink); }
 
-  /* Top bar */
+  /* ── Top bar ── */
   .masthead {
     border-bottom: 1px solid var(--line);
     background: var(--bar);
@@ -97,7 +96,7 @@
     align-items: center;
     gap: 4px;
     min-height: 58px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
   .site-title {
     font-weight: 600;
@@ -106,8 +105,15 @@
     padding: 10px 0;
     letter-spacing: -0.012em;
     font-size: 1.02rem;
+    flex-shrink: 0;
   }
   .site-title:hover { text-decoration: none; color: var(--ink); }
+  .nav {
+    display: flex;
+    align-items: center;
+    flex-shrink: 1;
+    min-width: 0;
+  }
   .nav a {
     color: var(--muted);
     padding: 14px 12px;
@@ -115,11 +121,9 @@
     font-size: 0.95rem;
     font-weight: 450;
     transition: color 0.15s;
+    white-space: nowrap;
   }
-  .nav a:hover {
-    color: var(--ink);
-    text-decoration: none;
-  }
+  .nav a:hover { color: var(--ink); text-decoration: none; }
   .nav a.active {
     color: var(--ink);
     font-weight: 550;
@@ -137,11 +141,53 @@
     font-weight: 500;
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
   .theme-btn:hover { color: var(--ink); border-color: var(--muted); }
   .theme-btn:active { transform: scale(0.97); }
 
-  /* Layout */
+  /* ── هدر موبایل ── */
+  @media (max-width: 640px) {
+    .masthead-inner {
+      min-height: 56px;
+      padding: 0 14px;
+      gap: 0;
+    }
+    .site-title {
+      margin-right: auto;
+      font-size: 0.98rem;
+      padding: 8px 0;
+    }
+    .theme-btn {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      order: 3;
+    }
+    .nav {
+      order: 4;
+      flex-basis: 100%;
+      width: 100%;
+      justify-content: flex-start;
+      border-top: 1px solid var(--line);
+      margin: 0 -14px;
+      padding: 0 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav a { padding: 12px 10px; font-size: 0.9rem; }
+    .spacer { display: none; }
+  }
+
+  @media (max-width: 400px) {
+    .site-title { font-size: 0.92rem; }
+    .nav a { padding: 11px 8px; font-size: 0.86rem; }
+    .theme-btn { padding: 5px 9px; font-size: 0.76rem; }
+  }
+
+  /* ── Layout ── */
   .page {
     max-width: 1100px;
     margin: 0 auto;
@@ -149,25 +195,30 @@
     display: grid;
     grid-template-columns: 250px 1fr;
     gap: 44px;
+    align-items: start;
   }
   @media (max-width: 800px) {
-    .page { grid-template-columns: 1fr; gap: 24px; padding-top: 28px; }
+    .page { grid-template-columns: 1fr; gap: 22px; padding-top: 24px; }
   }
 
-  /* Sidebar */
+  /* ── Sidebar: ثابت و بدون اسکرول ── */
   .sidebar {
-    align-self: start;
     position: sticky;
     top: 82px;
+    align-self: start;
     background: var(--soft);
     border: 1px solid var(--line);
     border-radius: var(--radius);
     padding: 24px 22px;
     box-shadow: var(--shadow);
     text-align: left;
+    /* دیگه max-height و overflow نداریم → هیچ اسکرول داخلی */
   }
   @media (max-width: 800px) {
-    .sidebar { position: static; text-align: center; }
+    .sidebar {
+      position: static;
+      text-align: center;
+    }
   }
   .avatar {
     width: 150px;
@@ -219,7 +270,8 @@
   .side-links li { margin: 5px 0; color: var(--muted); }
   .side-links a { font-weight: 450; }
 
-  /* Content */
+  /* ── Content ── */
+  .content { min-width: 0; }
   .content h1 {
     font-size: 2.05rem;
     margin: 0 0 18px;
@@ -245,13 +297,7 @@
     color: var(--ink);
   }
   .content p { margin: 0 0 14px; }
-  .content p + p { margin-top: -2px; } /* tighter paragraph rhythm */
-  .meta {
-    color: var(--muted);
-    font-size: 0.92rem;
-    margin: 0 0 8px;
-    font-weight: 400;
-  }
+  .meta { color: var(--muted); font-size: 0.92rem; margin: 0 0 8px; font-weight: 400; }
   .limits {
     color: var(--muted);
     font-size: 0.94rem;
@@ -288,21 +334,17 @@
     box-shadow: var(--shadow);
     transition: transform 0.1s, border-color 0.15s, background 0.15s, color 0.15s;
   }
-  .btn:hover {
-    border-color: var(--muted);
-    text-decoration: none;
-    color: var(--ink);
-  }
+  .btn:hover { border-color: var(--muted); text-decoration: none; color: var(--ink); }
   .btn:active { transform: translateY(1px); }
 
   .section { display: none; }
   .section.active {
     display: block;
-    animation: fade 0.25s ease-out;
+    animation: fadeIn 0.18s ease-out;
   }
-  @keyframes fade {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: none; }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   footer {
@@ -341,7 +383,6 @@
 <div class="page">
 
   <aside class="sidebar">
-    <!-- Put your photo at images/70954333.jpeg. If it is missing, initials are shown. -->
     <img class="avatar" id="avatarImg" src="images/70954333.jpeg" alt="Sogand Tatlari">
     <div class="avatar-fallback" id="avatarFallback" aria-hidden="true">ST</div>
     <h3 class="author-name">Sogand Tatlari</h3>
@@ -356,7 +397,6 @@
 
   <main class="content">
 
-    <!-- ABOUT -->
     <section class="section" id="sec-about">
       <h1>About me</h1>
       <p>Hi! I'm Sogand Tatlari, an independent AI researcher and software engineer based in Tehran. I hold a B.Sc. in Computer Engineering from Hakim Sabzevari University.</p>
@@ -368,7 +408,6 @@
       <p><a href="#publications">LPECO</a>, a control-inspired optimizer for tabular neural networks, and <a href="#publications">Emergent Brittleness</a>, a factorial study of prompt strategy and model choice in LLM code optimization. Both are preprints with public code.</p>
     </section>
 
-    <!-- PUBLICATIONS -->
     <section class="section" id="sec-publications">
       <h1>Publications</h1>
       <p class="meta">Both are preprints and have not been peer reviewed. * denotes equal contribution.</p>
@@ -386,7 +425,6 @@
       <p><a href="https://doi.org/10.5281/zenodo.17116501">Preprint</a> &nbsp;|&nbsp; <a href="https://github.com/isogand/emergent-brittleness-llm-study">Code and data</a></p>
     </section>
 
-    <!-- CV -->
     <section class="section" id="sec-cv">
       <h1>CV</h1>
       <p><a class="btn" href="Tatlari_CV.pdf">Download CV (PDF)</a></p>
@@ -432,23 +470,33 @@
 <footer>&copy; Sogand Tatlari</footer>
 
 <script>
-  // Simple page switching with the URL hash: #about, #publications, #cv
   var sections = ["about", "publications", "cv"];
+  var firstRender = true;
+
   function show() {
     var id = (location.hash || "#about").slice(1);
     if (sections.indexOf(id) === -1) id = "about";
+
     sections.forEach(function (s) {
       document.getElementById("sec-" + s).classList.toggle("active", s === id);
     });
     document.querySelectorAll(".nav a").forEach(function (a) {
       a.classList.toggle("active", a.getAttribute("data-sec") === id);
     });
-    window.scrollTo(0, 0);
+
+    if (firstRender) {
+      firstRender = false;
+    } else {
+      var prev = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = "auto";
+      window.scrollTo(0, 0);
+      document.documentElement.style.scrollBehavior = prev;
+    }
   }
+
   window.addEventListener("hashchange", show);
   show();
 
-  // Theme toggle
   var btn = document.getElementById("themeBtn");
   function label() {
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
@@ -462,7 +510,6 @@
   });
   label();
 
-  // Show initials if the profile photo is missing
   var img = document.getElementById("avatarImg");
   img.addEventListener("error", function () {
     img.style.display = "none";
